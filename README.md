@@ -24,7 +24,8 @@ On a rapsberry running buster, as user pi and in working directory /home/pi :
 by :
 ```ExecStart=/usr/lib/bluetooth/bluetoothd -p time```
 * Execute the following commands :
-```git clone https://github.com/zorgluf/btbepokb.git
+```
+git clone https://github.com/zorgluf/btbepokb.git
 sudo cp btbepokb/systemd/* /etc/systemd/system/
 sudo systemctl daemon-reload
 sudo systemctl enable btkeyboard.service

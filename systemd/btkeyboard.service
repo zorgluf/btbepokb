@@ -1,0 +1,15 @@
+[Unit]
+Description=bluetooth keyboard
+After=bluetooth.target
+ 
+[Service]
+Type=simple
+ExecStart=/usr/bin/python /home/pi/btbepokb/server/btk_server.py
+
+#Restart=on-failure
+ 
+# Configures the time to wait before service is stopped forcefully.
+TimeoutStopSec=300
+ 
+[Install]
+WantedBy=multi-user.target

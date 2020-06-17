@@ -1,0 +1,15 @@
+[Unit]
+Description=kbclient
+After=btkeyboard.service
+ 
+[Service]
+Type=simple
+ExecStart=/usr/bin/python /home/pi/btbepokb/keyboard/kb_client.py
+
+#Restart=on-failure
+ 
+# Configures the time to wait before service is stopped forcefully.
+TimeoutStopSec=300
+ 
+[Install]
+WantedBy=multi-user.target

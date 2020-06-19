@@ -35,7 +35,8 @@ sudo systemctl start btkeyboard.service
 sudo systemctl start kbclient.service
 ```
 * It might be useful to disable the Ctrl+Alt+Del sequence on your raspberry to prevent reboot when trying to log in windows :
-```sudo systemctl mask ctrl-alt-del.target
+```
+sudo systemctl mask ctrl-alt-del.target
 sudo systemctl daemon-reload
 ```
 * Plug a keyboard on your Rasp, and you are ready !

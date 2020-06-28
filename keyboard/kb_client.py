@@ -62,7 +62,7 @@ class Keyboard():
                 bepo_map = loadkeymap(os.path.dirname(__file__) + "/windows_bepo.klc")
                 fr_map = loadkeymap(os.path.dirname(__file__) + "/KBDFR.klc")
                 (self.bepotable, self.missings) = build_table(bepo_map,fr_map)
-
+'''
                 print "load CP850/unicode table"
                 self.CP850_map = dict()
                 with open(os.path.dirname(__file__) + "/CP850.TXT","r") as f:
@@ -70,6 +70,17 @@ class Keyboard():
                         if len(line) > 5 and line[0] not in ("#", "\n"):
                             (cp850,uni) = line.split("\t")[:2]
                             self.CP850_map[int(uni,16)] = int(cp850,16)
+'''
+                print "load CP1252/unicode table"
+                self.CP1252_map = dict()
+                with open(os.path.dirname(__file__) + "/CP1252.TXT","r") as f:
+                    for line in f.readlines():
+                        if len(line) > 5 and line[0] not in ("#", "\n"):
+                            (cp1252,uni) = line.split("\t")[:2]
+                            try:
+                                self.CP1252_map[int(uni,16)] = int(cp1252,16)
+                            except:
+                                pass
                             
 
                 print "waiting for keyboard"
@@ -99,7 +110,8 @@ class Keyboard():
                 if is_pressed:
                     self.keysarray.append(key)
                 else:
-                    self.keysarray.remove(key)
+                    if key in self.keysarray:
+                        self.keysarray.remove(key)
 
         #poll for keyboard events
         def event_loop(self):
@@ -107,15 +119,15 @@ class Keyboard():
                         #only bother if we hit a key and its an up or down event
                         if event.type==ecodes.EV_KEY and event.value < 2:
                                 #print "debug code :"+str(event.code)+"/"+str(event.value)
-                                #update internal state
-                                self.change_state(event.code,event.value)
                                 #check for key/char not translatable into azerty : try win alt combo
                                 if WIN_MODE and event.value == 1 and event.code in self.missings and self.modkeys in self.missings[event.code]:
-                                    #check if char exists in CP850
+                                    #check if char exists in CP1252
                                     unikey = int(self.missings[event.code][self.modkeys][0],16)
-                                    if unikey in self.CP850_map:
+                                    if unikey in self.CP1252_map:
                                         self.send_using_alt_combo(unikey)
                                         continue
+                                #update internal state
+                                self.change_state(event.code,event.value)
                                 #translation bepo -> azerty
                                 self.translate()
                                 #print "after translation : "+str(self.new_modkeys)+"/"+str(self.new_keysarray)
@@ -146,11 +158,18 @@ class Keyboard():
 
         def send_using_alt_combo(self,code):
             self.new_modkeys = 4
-            #convert unicode to CP850
-            cp850 = str(self.CP850_map[code])
+            #send 0
+            self.new_keysarray[0] = ecodes.ecodes["KEY_KP0"]
+            self.send_input()
+            self.new_keysarray[0] = 0
+            self.send_input()
+            #convert unicode to CP1252
+            cp1252 = str(self.CP1252_map[code])
             #send combo (using keypad)
-            for c in cp850:
+            for c in cp1252:
                 self.new_keysarray[0] = ecodes.ecodes["KEY_KP"+c]
+                self.send_input()
+                self.new_keysarray[0] = 0
                 self.send_input()
 
         #forward keyboard events to the dbus service

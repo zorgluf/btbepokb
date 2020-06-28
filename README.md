@@ -12,7 +12,7 @@ This program was tested on a raspberry pi 0 running raspbian buster. Should work
 
 The bebo to azerty keymap translator works with the following logic :
 * When a key is stroke on the keyboard, we use the bepo keymap to identify the character chosen by the user. This character is mapped to the corresponding keyboard scancodes on the azerty table and these scancodes are sent over the virtual bluetooth keyboard.
-* If the character doesn't match any existing on an azerty keyboard (É, È, À,...), we try to type it using the windows "alt-combo" tricks (alt + win char code). Can be disabled in file kb_client.py.
+* If the character doesn't match any existing on an azerty keyboard (É, È, À,...), we try to type it using the windows "alt-code" tricks (alt + win char code in CP1252 table). Can be disabled in file kb_client.py.
 * Ctrl and Meta shortcut are also translated from Bepo to Azerty. Can be disabled in file kb_client.py.
 
 ### How to install

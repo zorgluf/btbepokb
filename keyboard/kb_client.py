@@ -62,7 +62,7 @@ class Keyboard():
                 bepo_map = loadkeymap(os.path.dirname(__file__) + "/windows_bepo.klc")
                 fr_map = loadkeymap(os.path.dirname(__file__) + "/KBDFR.klc")
                 (self.bepotable, self.missings) = build_table(bepo_map,fr_map)
-'''
+                '''
                 print "load CP850/unicode table"
                 self.CP850_map = dict()
                 with open(os.path.dirname(__file__) + "/CP850.TXT","r") as f:
@@ -70,7 +70,7 @@ class Keyboard():
                         if len(line) > 5 and line[0] not in ("#", "\n"):
                             (cp850,uni) = line.split("\t")[:2]
                             self.CP850_map[int(uni,16)] = int(cp850,16)
-'''
+                '''
                 print "load CP1252/unicode table"
                 self.CP1252_map = dict()
                 with open(os.path.dirname(__file__) + "/CP1252.TXT","r") as f:

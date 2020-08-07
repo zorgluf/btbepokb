@@ -74,9 +74,9 @@ def loadkeymap(keymapfile):
                         out.append([ row[5], int(row[0],16), modkeys["ctrlr"] ])
                     #c4 : Ctrl + Alt, altgr
                     if len(row) > 6 and row[6] != "-1":
+                        out.append([ row[6], int(row[0],16), modkeys["altgr"] ])
                         out.append([ row[6], int(row[0],16), modkeys["ctrlr"] ^ modkeys["alt"] ])
                         out.append([ row[6], int(row[0],16), modkeys["ctrll"] ^ modkeys["alt"] ])
-                        out.append([ row[6], int(row[0],16), modkeys["altgr"] ])
                     #c5 : shift + Ctrl + Alt, shift + altgr
                     if len(row) > 7 and row[7] != "-1":
                         out.append([ row[7], int(row[0],16), modkeys["altgr"] ^ modkeys["shiftr"] ])

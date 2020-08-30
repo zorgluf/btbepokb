@@ -55,3 +55,10 @@ sudo systemctl daemon-reload
 * Global efficiency of the software. Many ways to improve, but the actual bad performance doesn't impact the user experience... so far.
 * Allow other keymaps to translate from/to. Should be an easy implementation as long as you have the windows klc keymap definition (a lot avalaible at http://kbdlayout.info/).
 * My English level... hope the explanations are understandabled.
+
+
+## Found it useful ?
+
+If you found this project valuable, and want to encourage the author, you can give me a cup of coffee !
+[![paypal](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=TRY8KXAN39KJL&source=url)
+

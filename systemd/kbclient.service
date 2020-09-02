@@ -4,7 +4,7 @@ After=btkeyboard.service
  
 [Service]
 Type=simple
-ExecStart=/usr/bin/python /home/pi/btbepokb/keyboard/kb_client.py
+ExecStart=PYTHONPATH=/home/pi/btbepokb/ /usr/bin/python /home/pi/btbepokb/keyboard/kb_client.py
 
 #Restart=on-failure
  

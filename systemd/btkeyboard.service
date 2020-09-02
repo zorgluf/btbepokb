@@ -4,7 +4,7 @@ After=bluetooth.target
  
 [Service]
 Type=simple
-ExecStart=/usr/bin/python /home/pi/btbepokb/server/btk_server.py
+ExecStart=PYTHONPATH=/home/pi/btbepokb/ /usr/bin/python /home/pi/btbepokb/server/btk_server.py
 
 #Restart=on-failure
  

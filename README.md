@@ -47,6 +47,7 @@ sudo systemctl daemon-reload
 1. The bluetooth keyboard device can bind up to 4 bluetooth hosts. To switch between host, press Ctrl+Fn (n from 1 to 4) twice within a second.
 2. To clear a host, press twice Ctrl+F12 within a second. It will clear the actual "slot" and switch to bluetooth pairing mode.
 3. When no host is yet recorded on a slot, the bluetooth device enter in pairing mode. 
+4. To disable/enable translation, hit Ctrl+F10 twice withn a second.
 
 
 

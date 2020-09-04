@@ -38,7 +38,7 @@ import json
 from dbus.mainloop.glib import DBusGMainLoop
 from gi.repository import GObject
 
-
+from utils.config import btkbconfig
 
 #
 #define a bluez 5 profile object for our keyboard
@@ -88,7 +88,6 @@ class BTKbBluezProfile(dbus.service.Object):
 class BTKbDevice():
     
     MY_DEV_NAME="Bepo Keyboard"
-    PAIRED_HOST_FILE = os.path.dirname(__file__) + "/paired_host" 
 
     #define some constants
     P_CTRL =17  #Service port - must match port configured in SDP record
@@ -100,9 +99,7 @@ class BTKbDevice():
  
     def __init__(self):
 
-        self.active_host = "1"
-        self.hosts = dict()
-        self.load_hosts()
+        self.config = btkbconfig()
 
         self.hotkey = ("",0)
 
@@ -171,26 +168,12 @@ class BTKbDevice():
         return fh.read()   
 
 
-    def load_hosts(self):
-
-        if os.path.exists(self.PAIRED_HOST_FILE):
-            content = json.loads(open(self.PAIRED_HOST_FILE,"r").read())
-            self.active_host = content["activeHost"]
-            print("loaded active_host :"+str(self.active_host))
-            self.hosts = content["hosts"]
-            print("loaded hosts :"+str(self.hosts))
-
-    def save_hosts(self):
-
-        content = { "activeHost": self.active_host, "hosts": self.hosts }
-        with open(self.PAIRED_HOST_FILE,"w") as fi:
-            fi.write(json.dumps(content))
 
     def start_connect(self):
 
-        if self.active_host in self.hosts:
+        if self.config.get_active_host():
             try:
-                self.connect(self.hosts[self.active_host])
+                self.connect(self.config.get_active_host_addr())
             except:
                 pass
         else:
@@ -237,8 +220,7 @@ EOF""")
         print ("Got a connection on the interrupt channel from " + cinfo[0])
 
         #record new address
-        self.hosts[self.active_host] = cinfo[0]
-        self.save_hosts()
+        self.config.set_active_host(cinfo[0])
 
 
     def connect(self,addr):
@@ -262,9 +244,8 @@ EOF""")
         if ord(message[2]) == 1 and ord(message[4]) in range(58,62):
             if ord(message[4]) == self.hotkey[0] and (time.time()-self.hotkey[1])<1:
                 #switch active host
-                self.active_host = str(self.hotkey[0]-57)
-                print("Switch to host "+self.active_host)
-                self.save_hosts()
+                self.config.set_active_host_index(str(self.hotkey[0]-57))
+                print("Switch to host "+self.config.get_active_host_index())
                 self.close_connexions()
                 self.start_connect()
                 return
@@ -274,9 +255,8 @@ EOF""")
         if ord(message[2]) == 1 and ord(message[4]) == 69:
             if ord(message[4]) == self.hotkey[0] and (time.time()-self.hotkey[1])<1:
                 #reset active host
-                del self.hosts[self.active_host]
-                print("Reset host "+self.active_host)
-                self.save_hosts()
+                self.config.del_host(self.config.get_active_host_index())
+                print("Reset host "+self.config.get_active_host_index())
                 self.close_connexions()
                 self.start_connect()
                 return

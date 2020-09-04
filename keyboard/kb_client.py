@@ -36,6 +36,7 @@ import evdev
 from evdev import *
 import keymap # used to map evdev input to hid keodes
 from keymapconv import loadkeymap, build_table
+from utils.config import btkbconfig
 
 WIN_MODE = True
 AZERTY_SHORTCUTS = False
@@ -46,11 +47,17 @@ class Keyboard():
 
         def __init__(self):
 
+                #load config
+                self.config = btkbconfig()
+
                 #keyboard state
                 self.modkeys = 0x00
                 self.keysarray = list()
                 self.new_modkeys = 0
                 self.new_keysarray = [ 0 ] * 6
+
+                self.hotkey = ("",0)
+                self.mapping_status = self.config.get_active_host_mapping_status()
 
                 print "setting up DBus Client"  
 
@@ -119,18 +126,20 @@ class Keyboard():
                         #only bother if we hit a key and its an up or down event
                         if event.type==ecodes.EV_KEY and event.value < 2:
                                 #print "debug code :"+str(event.code)+"/"+str(event.value)
-                                #check for key/char not translatable into azerty : try win alt combo
-                                if WIN_MODE and event.value == 1 and event.code in self.missings and self.modkeys in self.missings[event.code]:
-                                    #check if char exists in CP1252
-                                    unikey = int(self.missings[event.code][self.modkeys][0],16)
-                                    if unikey in self.CP1252_map:
-                                        self.send_using_alt_combo(unikey)
-                                        continue
-                                #update internal state
-                                self.change_state(event.code,event.value)
-                                #translation bepo -> azerty
-                                self.translate()
-                                #print "after translation : "+str(self.new_modkeys)+"/"+str(self.new_keysarray)
+                                #test if mapping (translation) activated
+                                if self.mapping_status:
+                                    #check for key/char not translatable into azerty : try win alt combo
+                                    if WIN_MODE and event.value == 1 and event.code in self.missings and self.modkeys in self.missings[event.code]:
+                                        #check if char exists in CP1252
+                                        unikey = int(self.missings[event.code][self.modkeys][0],16)
+                                        if unikey in self.CP1252_map:
+                                            self.send_using_alt_combo(unikey)
+                                            continue
+                                     #update internal state
+                                     self.change_state(event.code,event.value)
+                                     #translation bepo -> azerty
+                                     self.translate()
+                                     #print "after translation : "+str(self.new_modkeys)+"/"+str(self.new_keysarray)
                                 self.send_input()
 
         def translate(self):
@@ -181,12 +190,23 @@ class Keyboard():
             #print("Send modkey/keyarray : "+str(modkey)+"/"+str(keysarray))
             self.iface.send_keys(self.new_modkeys,keysarray)
 
+            #detect special ctrl key combinations
+            #capture hotkey F10
+            if ord(keysarray[2]) == 1 and ord(keysarray[4]) == 67:
+                if ord(keysarray[4]) == self.hotkey[0] and (time.time()-self.hotkey[1])<1:
+                    #switch mapping status
+                    self.config.switch_active_host_mapping_status()
+                    self.mapping_status = not(self.mapping_status)
+                    print("Set mapping status to "+self.mapping_status)
+                #first press of hotkey
+                self.hotkey = (ord(message[4]),time.time())
+
+
 
 
 if __name__ == "__main__":
 
         print "Setting up keyboard"
-
         kb = Keyboard()
 
         print "starting event loop"

@@ -35,7 +35,7 @@ class btkbconfig:
     def load(self):
         if os.path.exists(self.filename):
             content = json.loads(open(self.filename,"r").read())
-            self.active_host = content["activeHost"]
+            self.active_host = content["active_host"]
             print("loaded active_host :"+str(self.active_host))
             self.hosts = content["hosts"]
             print("loaded hosts :"+str(self.hosts))

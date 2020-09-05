@@ -135,12 +135,33 @@ class Keyboard():
                                         if unikey in self.CP1252_map:
                                             self.send_using_alt_combo(unikey)
                                             continue
-                                     #update internal state
-                                     self.change_state(event.code,event.value)
-                                     #translation bepo -> azerty
-                                     self.translate()
-                                     #print "after translation : "+str(self.new_modkeys)+"/"+str(self.new_keysarray)
+                                    #update internal state
+                                    self.change_state(event.code,event.value)
+                                    #translation bepo -> azerty
+                                    self.translate()
+                                    #print "after translation : "+str(self.new_modkeys)+"/"+str(self.new_keysarray)
+                                else:
+                                    self.copy(event.code,event.value)
                                 self.send_input()
+
+        def copy(self,key,is_pressed):
+            #if modkey pressed/released
+            evdev_code=ecodes.KEY[key]
+            modkey_element = keymap.modkey(evdev_code)
+            if modkey_element > 0:
+                #modify state
+                self.modkeys = self.modkeys ^ (0x80 >> modkey_element)
+            else:
+                #test if key pressed or released
+                if is_pressed:
+                    self.keysarray.append(key)
+                else:
+                    if key in self.keysarray:
+                        self.keysarray.remove(key)
+            self.new_keysarray = [ 0 ] * 6
+            for i,key in enumerate(self.keysarray):
+                self.new_keysarray[i] = key
+            self.new_modkeys = self.modkeys
 
         def translate(self):
             self.new_keysarray = [ 0 ] * 6
@@ -192,14 +213,14 @@ class Keyboard():
 
             #detect special ctrl key combinations
             #capture hotkey F10
-            if ord(keysarray[2]) == 1 and ord(keysarray[4]) == 67:
-                if ord(keysarray[4]) == self.hotkey[0] and (time.time()-self.hotkey[1])<1:
+            if self.new_modkeys == 1 and keysarray[0] == 67:
+                if keysarray[0] == self.hotkey[0] and (time.time()-self.hotkey[1])<1:
                     #switch mapping status
                     self.config.switch_active_host_mapping_status()
                     self.mapping_status = not(self.mapping_status)
-                    print("Set mapping status to "+self.mapping_status)
+                    print("Set mapping status to "+str(self.mapping_status))
                 #first press of hotkey
-                self.hotkey = (ord(message[4]),time.time())
+                self.hotkey = (keysarray[0],time.time())
 
 
 

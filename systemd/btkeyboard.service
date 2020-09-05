@@ -3,8 +3,9 @@ Description=bluetooth keyboard
 After=bluetooth.target
  
 [Service]
+Environment=PYTHONPATH=/home/pi/btbepokb
 Type=simple
-ExecStart=PYTHONPATH=/home/pi/btbepokb/ /usr/bin/python /home/pi/btbepokb/server/btk_server.py
+ExecStart=/usr/bin/python /home/pi/btbepokb/server/btk_server.py
 
 #Restart=on-failure
  

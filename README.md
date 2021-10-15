@@ -19,6 +19,10 @@ The bebo to azerty keymap translator works with the following logic :
 
 On a rapsberry running buster, as user pi and in working directory /home/pi :
 
+* Install python dependencies
+```
+sudo apt install python-evdev python-bluez python-dbus
+```
 * Edit file */etc/systemd/system/bluetooth.target.wants/bluetooth.service* and replace line :
 ```ExecStart=/usr/lib/bluetooth/bluetoothd```
 by :

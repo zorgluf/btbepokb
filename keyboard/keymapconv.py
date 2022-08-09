@@ -87,6 +87,10 @@ def loadkeymap(keymapfile):
                         out.append([ row[7], int(row[0],16), modkeys["alt"] ^ modkeys["shiftl"] ^ modkeys["ctrlr"] ])
     return out
 
+'''
+build a keymap conv table
+table[keycode_ori][modkey_ori] = (keycode_dest,modkey_dest)
+'''
 def build_table(keymap1, keymap2):
     table = dict()
     missings = dict()
@@ -96,9 +100,14 @@ def build_table(keymap1, keymap2):
             if key1[0] == key2[0]:
                 if key1[1] not in table:
                     table[key1[1]] = dict()
-                table[key1[1]][key1[2]] = (key2[1],key2[2])
+                if key1[2] in table[key1[1]]:
+                    #try to prioritise matching modkey
+                    if key1[2] == key2[2]:
+                        table[key1[1]][key1[2]] = (key2[1],key2[2])
+                    #otherwise, keep the old key
+                else:
+                    table[key1[1]][key1[2]] = (key2[1],key2[2])
                 found = True
-                break
         if not found:
             if key1[1] not in missings:
                 missings[key1[1]] = dict()

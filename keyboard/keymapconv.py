@@ -104,9 +104,11 @@ def build_table(keymap1, keymap2):
                     #try to prioritise matching modkey
                     if key1[2] == key2[2]:
                         table[key1[1]][key1[2]] = (key2[1],key2[2])
+                        #print "T: "+str(key1[1])+"/"+str(key1[2])+" <- "+str(key2[1])+"/"+str(key2[2])+" : "+str(key2[0])
                     #otherwise, keep the old key
                 else:
                     table[key1[1]][key1[2]] = (key2[1],key2[2])
+                    #print "F: "+str(key1[1])+"/"+str(key1[2])+" <- "+str(key2[1])+"/"+str(key2[2])+" : "+str(key2[0])
                 found = True
         if not found:
             if key1[1] not in missings:

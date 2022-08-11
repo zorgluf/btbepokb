@@ -205,6 +205,9 @@ class Keyboard():
         #forward keyboard events to the dbus service
         def send_input(self):
             keysarray = [0] * 6
+            #if diff modkeys, send new_modkeys alone first
+            if self.new_modkeys != self.new_modkeys:
+                self.iface.send_keys(self.new_modkeys,keysarray)
             #convert sc to HID keycode
             for i,k in enumerate(self.new_keysarray):
                 keysarray[i] = keymap.convert(ecodes.KEY[self.new_keysarray[i]])

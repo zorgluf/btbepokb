@@ -206,13 +206,17 @@ class Keyboard():
         def send_input(self):
             keysarray = [0] * 6
             #if diff modkeys, send new_modkeys alone first
-            if self.new_modkeys != self.new_modkeys:
+            if self.modkeys != self.new_modkeys:
+                #print("TRACE diff modkeys")
                 self.iface.send_keys(self.new_modkeys,keysarray)
             #convert sc to HID keycode
             for i,k in enumerate(self.new_keysarray):
                 keysarray[i] = keymap.convert(ecodes.KEY[self.new_keysarray[i]])
-            #print("Send modkey/keyarray : "+str(modkey)+"/"+str(keysarray))
-            self.iface.send_keys(self.new_modkeys,keysarray)
+            #print("Send modkey/keyarray : "+str(self.new_modkeys)+"/"+str(self.new_keysarray))
+            try:
+                self.iface.send_keys(self.new_modkeys,keysarray)
+            except:
+                pass
 
             #detect special ctrl key combinations
             #capture hotkey F10

@@ -209,6 +209,7 @@ class Keyboard():
             if self.modkeys != self.new_modkeys:
                 #print("TRACE diff modkeys")
                 self.iface.send_keys(self.new_modkeys,keysarray)
+                time.sleep(0.1)
             #convert sc to HID keycode
             for i,k in enumerate(self.new_keysarray):
                 keysarray[i] = keymap.convert(ecodes.KEY[self.new_keysarray[i]])

@@ -138,10 +138,10 @@ class BTKbDevice():
 
         opts = {
             "ServiceRecord":service_record,
-#            "Role":"server",
+       #     "Role":"server",
             "RequireAuthentication":False,
             "RequireAuthorization":False,
-#            "AutoConnect" : True,
+       #     "AutoConnect" : True,
         }
 
         #retrieve a proxy for the bluez profile interface
@@ -204,6 +204,8 @@ EOF""")
         print("Waiting for connections")
         self.scontrol=BluetoothSocket(L2CAP)
         self.sinterrupt=BluetoothSocket(L2CAP)
+        self.scontrol.setl2capsecurity(3)
+        self.sinterrupt.setl2capsecurity(3)
 
         #bind these sockets to a port - port zero to select next available		
         self.scontrol.bind(("",self.P_CTRL))
@@ -227,6 +229,8 @@ EOF""")
         print("Connecting to known host "+addr)
         self.scontrol=BluetoothSocket(L2CAP)
         self.sinterrupt=BluetoothSocket(L2CAP)
+        self.scontrol.setl2capsecurity(3)
+        self.sinterrupt.setl2capsecurity(3)
 
         self.scontrol.connect((addr,self.P_CTRL))
         print ("Connected to the control channel to " + addr)

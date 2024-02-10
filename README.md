@@ -1,3 +1,7 @@
+# NOT WORKING
+
+This software is not working anymore due to change in bluez stack. Please use the stenogotchi fork here : https://github.com/zorgluf/stenogotchi , that implements the BÉPO keymap convertor (and better UI).
+
 # btbepokb
 
 A bluetooth keyboard emulator and bepo to azerty keymap translator for Debian-based linux.
